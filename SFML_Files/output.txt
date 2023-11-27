@@ -1,0 +1,4 @@
+pretend that this is the project
+sounds good
+peepeepoopoo
+testing trie object without loading in csv
