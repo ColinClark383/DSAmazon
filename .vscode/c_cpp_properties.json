@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\Users\\augie\\Desktop\\Files\\School\\Data Structures\\Project3\\DSAmazon\\SFML_Files\\SFML-2.5.1\\include"
+                "..\\SFML_Files\\SFML-2.5.1\\include"
             ],
             "defines": [
                 "_DEBUG",
