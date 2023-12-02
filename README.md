@@ -1,7 +1,7 @@
 # DSAmazon
 Ever feel like Amazon's search system is not for you?
 Do you think you don't get enough information for each product before you visit it's page?
-Getting fed up with how Amazon throws in sponcered items into you search that are loosly related to what you want?
+Getting fed up with how Amazon throws in sponsored items into you search that are loosly related to what you want?
 If you answered yes to any of those questions, DSAmazon might just be for you!
 
 DSAmazon is a simplified search tool that lets users search for real products on amazon in both a fast and convienient way!
