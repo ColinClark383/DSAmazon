@@ -1,9 +1,20 @@
 #include "trie.h"
 #include <queue>
-
+#include <sstream>
 
 trie::trie(){
     root = new trieNode;
+}
+
+trie::trie(std::vector<product> &products){
+    root = new trieNode;
+    for(int i = 0; i < products.size(); i++){
+        std::stringstream ss(products[i].name);
+        std::string word;
+        while(ss >> word){
+            insert(word, products[i]);
+        }
+    }
 }
 
 trie::~trie(){

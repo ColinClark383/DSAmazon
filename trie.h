@@ -13,8 +13,11 @@ class trie{
 
     public:
     //constructor
-    //loads in all data from .csv file
     trie();
+
+    //constructor with vector of products
+    //products from vector are inserted into trie
+    trie(std::vector<product> &products);
     //destructor
     //deletes nodes in a postorder fashion
     ~trie();
