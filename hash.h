@@ -1,5 +1,6 @@
 #pragma once
 #include "product.h"
+#include <vector>
 
 class HashTable
 {
