@@ -1,6 +1,5 @@
 #pragma once
 #include "product.h"
-#include <vector>
 #include <unordered_map>
 
 struct trieNode{

@@ -1,5 +1,4 @@
 #include "trie.h"
-#include <fstream>
 #include <queue>
 
 
