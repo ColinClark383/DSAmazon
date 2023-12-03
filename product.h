@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <string>
 #include <vector>
@@ -39,14 +38,13 @@ std::string quoteRemove(std::string name)
 // returns vector of all products from excel data sheet
 std::vector<product> readProducts()
 {
+	std::vector<product> data;  // To store CSV data
 	std::ifstream file("amazon_products.txt");
 
 	if (!file.is_open()) {
 		std::cout << "Error opening file." << std::endl;
-		return;
+		return data;
 	}
-
-	std::vector<product> data;  // To store CSV data
 
 	bool start = true;
 	int test = 0; //keep this if you only want to load part of the data
