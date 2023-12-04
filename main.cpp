@@ -116,7 +116,7 @@ int main()
 
     
     sf::RectangleShape SEARCH_MODE_SELECT_BOX(sf::Vector2f(WINDOW_WIDTH/4.67, WINDOW_HEIGHT/2.67));
-    SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Transparent);
+    SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Green    );
     SEARCH_MODE_SELECT_BOX.setOutlineColor(sf::Color::White);
     SEARCH_MODE_SELECT_BOX.setOutlineThickness(2);
     SEARCH_MODE_SELECT_BOX.move(2,2);
@@ -158,6 +158,11 @@ int main()
         {
             if (event.key.code == sf::Keyboard::Enter) {
                 window.close();
+                return 0;
+            }
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return 0;
             }
         }
         window.clear();
