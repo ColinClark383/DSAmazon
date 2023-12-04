@@ -12,18 +12,19 @@ class HashTable
     std::vector< std::vector< product>> container;
 
     // remake table in case load factor is exceeded to maintain speed
-    void rehash();
+    void reHash();
 
-    //inserts product into hash table
+    // inserts product into hash table
     void insertProd(product product);
 
-    //hashing function to assign index
+    // hashing function to assign index
     long hashFunc(std::string name);
 
 public:
+    // constructor for hash table
     HashTable(const std::vector<product> &prod);
 
-    //gets a vector of all products from a certain keyword
+    // gets a vector of all products from a certain keyword
     std::vector<product> getKeyword(std::string keyword);
 
 };
