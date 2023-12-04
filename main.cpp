@@ -83,15 +83,9 @@ std::vector<product> readProducts()
 
 int main()
 {
-
-    // std::cout << "pretend that this is the project" << std::endl;
-    // std::cout << "sounds good" << std::endl;
-    // std::cout << "peepeepoopoo" << std::endl;
-
     std::vector<product> products = readProducts();
     trie productTrie(products);
-    //put in Hash table here
-    // HashTable productHash(products);
+    HashTable productHash(products);
 
     // bool to determine if using trie or hash table
     // true = trie. false = hash table
