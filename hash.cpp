@@ -1,12 +1,10 @@
 #include "hash.h"
 #include <cmath>
 
-HashTable::HashTable(int capacity, const std::vector<product> &prod)
+HashTable::HashTable(const std::vector<product> &prod)
 {
     // initialize table with capacity and insert values from data sheet
-    this->capacity = capacity;
     container.resize(capacity);
-    size = 0;
     for (int i = 0; i < prod.size(); i++)
         insertProd(prod[i]);
 }
