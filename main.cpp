@@ -83,9 +83,13 @@ std::vector<product> readProducts()
 
 int main()
 {
+    std::cout << "1" << std::endl;
     std::vector<product> products = readProducts();
+    std::cout << "2" << std::endl;
     trie productTrie(products);
+    std::cout << "3" << std::endl;
     HashTable productHash(products);
+    std::cout << "4" << std::endl;
 
     // bool to determine if using trie or hash table
     // true = trie. false = hash table
@@ -93,17 +97,21 @@ int main()
 
     //vector of products that match keyword
     std::vector<product> results();
+    std::cout << "5" << std::endl;
 
     //string used for search keywords
     std::string keyword = "";
+    std::cout << "6" << std::endl;
 
 
 // SFML Shee Begins
     // Create variables to be used
+    sf::Font FONT;
+    if (!FONT.loadFromFile("font.ttf")) std::cout << "Failed to open font" << std::endl;
+
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Project_3", sf::Style::Close);
     int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
     int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
-
     
     sf::RectangleShape SEARCH_MODE_SELECT_BOX(sf::Vector2f(WINDOW_WIDTH/4.67, WINDOW_HEIGHT/2.67));
     SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Transparent);
@@ -117,11 +125,26 @@ int main()
     SEARCH_BOX.setOutlineThickness(2);
     SEARCH_BOX.setPosition((WINDOW_WIDTH/4.67)+4, WINDOW_HEIGHT/20);
 
+    sf::Text SEARCH_BOX_PROMPT("Enter Keyword(s):", FONT, 36);
+	SEARCH_BOX_PROMPT.setFillColor(sf::Color::Cyan);
+    SEARCH_BOX_PROMPT.setStyle(sf::Text::Bold);
+	SEARCH_BOX_PROMPT.setPosition((WINDOW_WIDTH/4.67)+6, (((WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12))/2)-3);
+
     sf::RectangleShape GO_BOX(sf::Vector2f(WINDOW_HEIGHT/12, WINDOW_HEIGHT/12));
     GO_BOX.setFillColor(sf::Color::Transparent);
     GO_BOX.setOutlineColor(sf::Color::White);
     GO_BOX.setOutlineThickness(2);
     GO_BOX.setPosition((WINDOW_WIDTH/1.4)+(WINDOW_WIDTH/4.67)+6, WINDOW_HEIGHT/20);
+    
+    sf::Text GO_BOX_PROMPT("GO!", FONT, 32);
+	GO_BOX_PROMPT.setFillColor(sf::Color::Cyan);
+    GO_BOX_PROMPT.setStyle(sf::Text::Bold);
+	GO_BOX_PROMPT.setPosition((WINDOW_WIDTH/1.4)+(WINDOW_WIDTH/4.67)+11, (WINDOW_HEIGHT/20)+10);
+
+    sf::Text PROJECT_DESCRIPTION("Amazon\nSearcher!\n\nMade by:\nAddison Ferrell\nAugust Gould\nColin Clark", FONT, 24);
+	PROJECT_DESCRIPTION.setFillColor(sf::Color::Cyan);
+    PROJECT_DESCRIPTION.setStyle(sf::Text::Bold);
+	PROJECT_DESCRIPTION.setPosition(12, (WINDOW_HEIGHT/2.67)+12);
 
     sf::RectangleShape RESULTS_MAIN_OUTLINE(sf::Vector2f((WINDOW_WIDTH/1.4)-2, WINDOW_HEIGHT/1.4));
     RESULTS_MAIN_OUTLINE.setFillColor(sf::Color::Transparent);
@@ -135,24 +158,103 @@ int main()
     PAGE_LEFT_BUTTON.setOutlineThickness(2);
     PAGE_LEFT_BUTTON.setPosition((WINDOW_WIDTH/4.67)+6+(WINDOW_WIDTH/24), (WINDOW_HEIGHT/1.4)+(WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+8);
     
+    sf::Text PAGE_LEFT_BUTTON_PROMPT("<", FONT, 32);
+	PAGE_LEFT_BUTTON_PROMPT.setFillColor(sf::Color::Cyan);
+    PAGE_LEFT_BUTTON_PROMPT.setStyle(sf::Text::Bold);
+	PAGE_LEFT_BUTTON_PROMPT.setPosition((WINDOW_WIDTH/4.67)+66+(WINDOW_WIDTH/24), (WINDOW_HEIGHT/1.4)+(WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+16);
+
     sf::RectangleShape PAGE_RIGHT_BUTTON(sf::Vector2f(WINDOW_WIDTH/9.33, WINDOW_HEIGHT/12));
     PAGE_RIGHT_BUTTON.setFillColor(sf::Color::Transparent);
     PAGE_RIGHT_BUTTON.setOutlineColor(sf::Color::White);
     PAGE_RIGHT_BUTTON.setOutlineThickness(2);
     PAGE_RIGHT_BUTTON.setPosition((WINDOW_WIDTH/1.4)+(WINDOW_WIDTH/4.67)-(WINDOW_WIDTH/9.33)-(WINDOW_WIDTH/24)+6, (WINDOW_HEIGHT/1.4)+(WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+8);
 
+    sf::Text PAGE_RIGHT_BUTTON_PROMPT(">", FONT, 32);
+	PAGE_RIGHT_BUTTON_PROMPT.setFillColor(sf::Color::Cyan);
+    PAGE_RIGHT_BUTTON_PROMPT.setStyle(sf::Text::Bold);
+	PAGE_RIGHT_BUTTON_PROMPT.setPosition((WINDOW_WIDTH/1.4)+(WINDOW_WIDTH/4.67)-(WINDOW_WIDTH/9.33)-(WINDOW_WIDTH/24)+66, (WINDOW_HEIGHT/1.4)+(WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+16);
+
+    sf::Text SEARCH_SELECTOR_TEXT("Select Search Mode", FONT, 25);
+    SEARCH_SELECTOR_TEXT.setFillColor(sf::Color::Cyan);
+    SEARCH_SELECTOR_TEXT.setStyle(sf::Text::Bold);
+    SEARCH_SELECTOR_TEXT.setPosition(4, 4);
+
+    sf::Text SEARCH_SELECTOR_HT_TEXT("Hash Table", FONT, 20);
+    SEARCH_SELECTOR_HT_TEXT.setFillColor(sf::Color::Cyan);
+    SEARCH_SELECTOR_HT_TEXT.setStyle(sf::Text::Bold);
+    SEARCH_SELECTOR_HT_TEXT.setPosition(40, ((2+WINDOW_HEIGHT/2.67)/2)/2);
+
+    sf::CircleShape HT_RADIO_BUTTON(8);
+    HT_RADIO_BUTTON.setFillColor(sf::Color::Transparent);
+    HT_RADIO_BUTTON.setOutlineColor(sf::Color::White);
+    HT_RADIO_BUTTON.setOutlineThickness(2);
+    HT_RADIO_BUTTON.setPosition(185, (((2+WINDOW_HEIGHT/2.67)/2)/2)+5);
+
+    sf::CircleShape HT_RADIO_BUTTON_SELECTED(6);
+    HT_RADIO_BUTTON_SELECTED.setFillColor(sf::Color::White);
+    HT_RADIO_BUTTON_SELECTED.setPosition(187, (((2+WINDOW_HEIGHT/2.67)/2)/2)+7);
+
+    sf::Text SEARCH_SELECTOR_TREE_TEXT("26ary Tree", FONT, 20);
+    SEARCH_SELECTOR_TREE_TEXT.setFillColor(sf::Color::Cyan);
+    SEARCH_SELECTOR_TREE_TEXT.setStyle(sf::Text::Bold);
+    SEARCH_SELECTOR_TREE_TEXT.setPosition(40, ((2+WINDOW_HEIGHT/2.67)/2)/.75);
+
+    sf::CircleShape TREE_RADIO_BUTTON(8);
+    TREE_RADIO_BUTTON.setFillColor(sf::Color::Transparent);
+    TREE_RADIO_BUTTON.setOutlineColor(sf::Color::White);
+    TREE_RADIO_BUTTON.setOutlineThickness(2);
+    TREE_RADIO_BUTTON.setPosition(185, (((2+WINDOW_HEIGHT/2.67)/2)/.75)+5);
+
+    sf::CircleShape TREE_RADIO_BUTTON_SELECTED(6);
+    TREE_RADIO_BUTTON_SELECTED.setFillColor(sf::Color::White);
+    TREE_RADIO_BUTTON_SELECTED.setPosition(187, (((2+WINDOW_HEIGHT/2.67)/2)/.75)+7);
+
+    sf::Text KEYWORD_TEXT("|", FONT, 36);
+	KEYWORD_TEXT.setFillColor(sf::Color::Cyan);
+	KEYWORD_TEXT.setPosition((WINDOW_WIDTH/4.67)+400, (((WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12))/2)-3);
+
+    sf::Text TIME_TEXT("Total Time Taken:", FONT, 24);
+	TIME_TEXT.setFillColor(sf::Color::Cyan);
+    TIME_TEXT.setStyle(sf::Text::Bold);
+	TIME_TEXT.setPosition((((((WINDOW_WIDTH/4.67))/2)+((WINDOW_WIDTH/1.4)))/2)+24, (WINDOW_HEIGHT/1.4)+(WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+16);
+
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.key.code == sf::Keyboard::Enter) {
-                window.close();
-                return 0;
-            }
             if (event.type == sf::Event::Closed) {
                 window.close();
-                return 0;
+                break;
+            }
+            // Code taken from August Gould COP 3503 Project3
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::BackSpace && keyword.size() != 1) {
+                    keyword = keyword.substr(0, keyword.size() - 2);
+                    keyword += "|";
+                    KEYWORD_TEXT.setString(keyword);
+                }
+                else if (event.key.code == sf::Keyboard::Return) {
+                    window.close();
+                    keyword = keyword.substr(0, keyword.size() - 1);
+                }
+
+            }
+            if (event.type == sf::Event::TextEntered) {
+                if (event.text.unicode > 64 && event.text.unicode < 123) {
+                    std::cout << event.text.unicode << std::endl;
+                    keyword = keyword.substr(0, keyword.size() - 1);
+                    keyword += static_cast<char>(event.text.unicode);
+                    if (keyword.size() == 0) {
+                        break;
+                    }
+
+                    keyword += "|";
+                    KEYWORD_TEXT.setString(keyword);
+                }
+            }
+            if (event.type == sf::Event::MouseButtonReleased) {
+                // if (event.mouseButton.x <)
             }
         }
         window.clear();
@@ -162,6 +264,20 @@ int main()
         window.draw(RESULTS_MAIN_OUTLINE);
         window.draw(PAGE_LEFT_BUTTON);
         window.draw(PAGE_RIGHT_BUTTON);
+        window.draw(KEYWORD_TEXT);
+        window.draw(SEARCH_SELECTOR_TEXT);
+        window.draw(SEARCH_SELECTOR_HT_TEXT);
+        window.draw(SEARCH_SELECTOR_TREE_TEXT);
+        window.draw(HT_RADIO_BUTTON);
+        window.draw(TREE_RADIO_BUTTON);
+        window.draw(HT_RADIO_BUTTON_SELECTED);
+        window.draw(TREE_RADIO_BUTTON_SELECTED);
+        window.draw(SEARCH_BOX_PROMPT);
+        window.draw(GO_BOX_PROMPT);
+        window.draw(PROJECT_DESCRIPTION);
+        window.draw(PAGE_LEFT_BUTTON_PROMPT);
+        window.draw(PAGE_RIGHT_BUTTON_PROMPT);
+        window.draw(TIME_TEXT);
         window.display();
     }
     return 0;

@@ -1,5 +1,6 @@
 #include "hash.h"
 #include <cmath>
+#include <iostream>
 
 HashTable::HashTable(const std::vector<product> &prod)
 {
