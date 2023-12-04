@@ -54,9 +54,13 @@
         "iomanip": "cpp",
         "locale": "cpp",
         "map": "cpp",
+<<<<<<< HEAD
         "ranges": "cpp",
         "set": "cpp",
         "span": "cpp",
+=======
+        "set": "cpp",
+>>>>>>> c18376944de48e31d58f6429dfde05b9cbc98b6b
         "sstream": "cpp",
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
