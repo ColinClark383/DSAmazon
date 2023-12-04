@@ -23,7 +23,7 @@ std::string quoteRemove(std::string name)
 std::vector<product> readProducts()
 {
 	std::vector<product> data;  // To store CSV data
-	std::ifstream file("amazon_products.txt");
+	std::ifstream file("../amazon_products.txt");
 
 	if (!file.is_open()) {
 		std::cout << "Error opening file." << std::endl;
@@ -106,7 +106,7 @@ int main()
 
     
     sf::RectangleShape SEARCH_MODE_SELECT_BOX(sf::Vector2f(WINDOW_WIDTH/4.67, WINDOW_HEIGHT/2.67));
-    SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Green    );
+    SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Transparent);
     SEARCH_MODE_SELECT_BOX.setOutlineColor(sf::Color::White);
     SEARCH_MODE_SELECT_BOX.setOutlineThickness(2);
     SEARCH_MODE_SELECT_BOX.move(2,2);
