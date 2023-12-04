@@ -84,29 +84,25 @@ std::vector<product> readProducts()
 int main()
 {
 
-    std::cout << "pretend that this is the project" << std::endl;
-    std::cout << "sounds good" << std::endl;
-    std::cout << "peepeepoopoo" << std::endl;
+    // std::cout << "pretend that this is the project" << std::endl;
+    // std::cout << "sounds good" << std::endl;
+    // std::cout << "peepeepoopoo" << std::endl;
 
-    std::cout << "testing trie object without loading in csv" << std::endl;
-    //trie test;
+    std::vector<product> products = readProducts();
+    trie productTrie(products);
+    //put in Hash table here
+    // HashTable productHash(products);
 
-    /*
-    product airpods;
-    airpods.name = "apple airpods";
-    airpods.price = "99.99";
-    airpods.rating = "4.8";
-    airpods.bought = "1500";
-    airpods.imageURL = "https://m.media-amazon.com/images/I/61sxnqv5FdL._AC_UL320_.jpg";
-    airpods.productURL = "https://www.amazon.com/dp/B0B4NQBZ4Q";
-    test.insert("airpod", airpods);
-    std::vector<product> p = test.getKeyword("airpod");
-    product p1 = p[0];
-    std::cout << p1.name << " " << p1.price << std::endl;
-    std::cout << p1.rating << " " << p1.bought << std::endl;
-    std::cout << p1.productURL << std::endl;
-    std::cout << p1.imageURL << std::endl;
-    */
+    // bool to determine if using trie or hash table
+    // true = trie. false = hash table
+    bool searchMode = true;
+
+    //vector of products that match keyword
+    std::vector<product> results();
+
+    //string used for search keywords
+    std::string keyword = "";
+
 
 // SFML Shee Begins
     // Create variables to be used
@@ -171,3 +167,18 @@ int main()
     }
     return 0;
 }
+
+/*
+-copy this code into event to switch between search modes
+
+searchMode = !searchMode;
+
+-copy this code to load in vector of products based on keyword
+
+if(searchMode){
+    results = productTrie.getKeyword(keyword);
+}
+else{
+    results = productHash.getKeyword(keyword);
+}
+*/
