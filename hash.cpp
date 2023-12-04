@@ -10,7 +10,7 @@ HashTable::HashTable(const std::vector<product> &prod)
         insertProd(prod[i]);
 }
 
-void HashTable::rehash()
+void HashTable::reHash()
 {
     capacity = capacity * 2;
     std::vector< std::vector< product>> newContainer(capacity);
@@ -33,7 +33,7 @@ void HashTable::insertProd(product product)
 {
     // rehash if load factor is exceeded
     if (size >= (capacity * maxLoadFactor))
-        rehash();
+        reHash();
 
     int index = hashFunc(product.name);
     auto &bucket = container[index];
