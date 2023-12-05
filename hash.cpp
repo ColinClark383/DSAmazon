@@ -35,7 +35,7 @@ void HashTable::insertProd(product product)
     if (size >= (capacity * maxLoadFactor))
         reHash();
 
-    int index = hashFunc(product.name);
+    size_t index = hashFunc(product.name);
     auto &bucket = container[index];
     // find corresponding bucket and add new product if not already in bucket
     for (int i = 0; i < bucket.size(); i++)
@@ -45,10 +45,10 @@ void HashTable::insertProd(product product)
     ++size;
 }
 
-long HashTable::hashFunc(std::string name)
+size_t HashTable::hashFunc(std::string name)
 {
     // takes characters of string and multiples the chars by ascending powers of 31 for hash 
-    long index = 0;
+    size_t index = 0;
     for (int i = 0; i < name.size(); i++)
         index += name[i] * pow(31, i);
     return index % capacity;
