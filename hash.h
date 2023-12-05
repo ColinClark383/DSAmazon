@@ -18,7 +18,7 @@ class HashTable
     void insertProd(product product);
 
     // hashing function to assign index
-    long hashFunc(std::string name);
+    size_t hashFunc(std::string name);
 
 public:
     // constructor for hash table
