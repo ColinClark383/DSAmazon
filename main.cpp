@@ -83,13 +83,9 @@ std::vector<product> readProducts()
 
 int main()
 {
-    std::cout << "1" << std::endl;
     std::vector<product> products = readProducts();
-    std::cout << "2" << std::endl;
     trie productTrie(products);
-    std::cout << "3" << std::endl;
     HashTable productHash(products);
-    std::cout << "4" << std::endl;
 
     // bool to determine if using trie or hash table
     // true = trie. false = hash table
@@ -97,11 +93,10 @@ int main()
 
     //vector of products that match keyword
     std::vector<product> results();
-    std::cout << "5" << std::endl;
 
     //string used for search keywords
+    std::string displayKeyword = "";
     std::string keyword = "";
-    std::cout << "6" << std::endl;
 
 
 // SFML Shee Begins
@@ -112,6 +107,11 @@ int main()
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Project_3", sf::Style::Close);
     int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
     int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
+
+    float RESULT_BOX_Xi = (WINDOW_WIDTH/1.4)-2;
+    float RESULT_BOX_Xf = (WINDOW_WIDTH/4.67)+6;
+    float RESULT_BOX_Yi = WINDOW_HEIGHT/1.4;
+    float RESULT_BOX_Yf = (WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+4;
     
     sf::RectangleShape SEARCH_MODE_SELECT_BOX(sf::Vector2f(WINDOW_WIDTH/4.67, WINDOW_HEIGHT/2.67));
     SEARCH_MODE_SELECT_BOX.setFillColor(sf::Color::Transparent);
@@ -146,11 +146,11 @@ int main()
     PROJECT_DESCRIPTION.setStyle(sf::Text::Bold);
 	PROJECT_DESCRIPTION.setPosition(12, (WINDOW_HEIGHT/2.67)+12);
 
-    sf::RectangleShape RESULTS_MAIN_OUTLINE(sf::Vector2f((WINDOW_WIDTH/1.4)-2, WINDOW_HEIGHT/1.4));
+    sf::RectangleShape RESULTS_MAIN_OUTLINE(sf::Vector2f(RESULT_BOX_Xi, RESULT_BOX_Yi));
     RESULTS_MAIN_OUTLINE.setFillColor(sf::Color::Transparent);
     RESULTS_MAIN_OUTLINE.setOutlineColor(sf::Color::White);
     RESULTS_MAIN_OUTLINE.setOutlineThickness(2);
-    RESULTS_MAIN_OUTLINE.setPosition((WINDOW_WIDTH/4.67)+6, (WINDOW_HEIGHT/20)+(WINDOW_HEIGHT/12)+4);
+    RESULTS_MAIN_OUTLINE.setPosition(RESULT_BOX_Xf, RESULT_BOX_Yf);
 
     sf::RectangleShape PAGE_LEFT_BUTTON(sf::Vector2f(WINDOW_WIDTH/9.33, WINDOW_HEIGHT/12));
     PAGE_LEFT_BUTTON.setFillColor(sf::Color::Transparent);
@@ -229,32 +229,40 @@ int main()
             }
             // Code taken from August Gould COP 3503 Project3
             if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::BackSpace && keyword.size() != 1) {
-                    keyword = keyword.substr(0, keyword.size() - 2);
-                    keyword += "|";
-                    KEYWORD_TEXT.setString(keyword);
+                if (event.key.code == sf::Keyboard::BackSpace && displayKeyword.size() != 1) {
+                    displayKeyword = displayKeyword.substr(0, displayKeyword.size() - 2);
+                    displayKeyword += "|";
+                    KEYWORD_TEXT.setString(displayKeyword);
                 }
                 else if (event.key.code == sf::Keyboard::Return) {
                     window.close();
-                    keyword = keyword.substr(0, keyword.size() - 1);
                 }
 
             }
             if (event.type == sf::Event::TextEntered) {
                 if (event.text.unicode > 64 && event.text.unicode < 123) {
                     std::cout << event.text.unicode << std::endl;
-                    keyword = keyword.substr(0, keyword.size() - 1);
-                    keyword += static_cast<char>(event.text.unicode);
-                    if (keyword.size() == 0) {
+                    displayKeyword = displayKeyword.substr(0, displayKeyword.size() - 1);
+                    displayKeyword += static_cast<char>(event.text.unicode);
+                    if (displayKeyword.size() == 0) {
                         break;
                     }
 
-                    keyword += "|";
-                    KEYWORD_TEXT.setString(keyword);
+                    displayKeyword += "|";
+                    KEYWORD_TEXT.setString(displayKeyword);
                 }
             }
             if (event.type == sf::Event::MouseButtonReleased) {
-                // if (event.mouseButton.x <)
+                if ((event.mouseButton.x > 40 && event.mouseButton.x < 200) && (event.mouseButton.y > (((2+WINDOW_HEIGHT/2.67)/2)/2) && event.mouseButton.y < ((((2+WINDOW_HEIGHT/2.67)/2)/2)+30))) {
+                    searchMode = false;
+                } else if ((event.mouseButton.x > 40 && event.mouseButton.x < 200) && (event.mouseButton.y > (((2+WINDOW_HEIGHT/2.67)/2)/.75) && event.mouseButton.y < (((2+WINDOW_HEIGHT/2.67)/2)/.75)+30)) {
+                    searchMode = true;
+                } else if ((event.mouseButton.x >= GO_BOX.getPosition().x) && (event.mouseButton.x <= (GO_BOX.getPosition().x + GO_BOX.getSize().x))
+                        && (event.mouseButton.y >= GO_BOX.getPosition().y) && (event.mouseButton.y <= (GO_BOX.getPosition().y + GO_BOX.getSize().y)))
+                {
+                    keyword = displayKeyword.substr(0, displayKeyword.size() - 1);
+                    std::cout << keyword << std::endl;
+                }
             }
         }
         window.clear();
@@ -270,8 +278,11 @@ int main()
         window.draw(SEARCH_SELECTOR_TREE_TEXT);
         window.draw(HT_RADIO_BUTTON);
         window.draw(TREE_RADIO_BUTTON);
-        window.draw(HT_RADIO_BUTTON_SELECTED);
-        window.draw(TREE_RADIO_BUTTON_SELECTED);
+        if (searchMode) {
+            window.draw(TREE_RADIO_BUTTON_SELECTED);
+        } else {
+            window.draw(HT_RADIO_BUTTON_SELECTED);
+        }
         window.draw(SEARCH_BOX_PROMPT);
         window.draw(GO_BOX_PROMPT);
         window.draw(PROJECT_DESCRIPTION);
