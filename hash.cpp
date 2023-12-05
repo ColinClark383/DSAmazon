@@ -20,7 +20,7 @@ void HashTable::reHash()
     {
         for (long j = 0; j < container[i].size(); ++j)
          {
-            long newIndex = hashFunc(container[i][j].name);
+            size_t newIndex = hashFunc(container[i][j].name);
             newContainer[newIndex].push_back(container[i][j]);
          }
     }
@@ -60,9 +60,11 @@ std::vector<product> HashTable::getKeyword(std::string keyword)
     std::vector<product> matches;
     int index = hashFunc(keyword);
     auto &bucket = container[index];
-    for (int i = 0; i < bucket.size(); i++)
-        if (bucket[i].name == keyword)
+    for (int i = 0; i < bucket.size(); i++) {
+        // std::cout << bucket[i].name << " == " << keyword << std::endl;
+        if (bucket[i].name == keyword) {
             matches.push_back(bucket[i]);
-
+        }
+    }
     return matches;
 }

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 
 
@@ -14,7 +15,7 @@ std::string quoteRemove(std::string name)
 	for (int i = 0; i < name.size(); i++)
 	{
 		if (name[i] != '\"')
-			res += name[i];
+			res += tolower(name[i]);
 	}
 	return res;
 }
@@ -67,7 +68,7 @@ std::vector<product> readProducts()
 		}
 		data.push_back(temp);
 		++test;
-		if (test == 50) // only loads 50 products for testing purposes
+		if (test == 25000) // only loads 50 products for testing purposes
 			break;
 	}
 
@@ -90,9 +91,10 @@ int main()
     // bool to determine if using trie or hash table
     // true = trie. false = hash table
     bool searchMode = true;
+    bool drawLRButtons = false;
 
     //vector of products that match keyword
-    std::vector<product> results();
+    std::vector<product> results;
 
     //string used for search keywords
     std::string displayKeyword = "";
@@ -102,11 +104,13 @@ int main()
 // SFML Shee Begins
     // Create variables to be used
     sf::Font FONT;
+    std::chrono::microseconds duration;
     if (!FONT.loadFromFile("font.ttf")) std::cout << "Failed to open font" << std::endl;
 
     sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Project_3", sf::Style::Close);
     int WINDOW_HEIGHT = sf::VideoMode::getDesktopMode().height;
     int WINDOW_WIDTH = sf::VideoMode::getDesktopMode().width;
+    int currPage = 0;
 
     float RESULT_BOX_Xi = (WINDOW_WIDTH/1.4)-2;
     float RESULT_BOX_Xf = (WINDOW_WIDTH/4.67)+6;
@@ -151,6 +155,43 @@ int main()
     RESULTS_MAIN_OUTLINE.setOutlineColor(sf::Color::White);
     RESULTS_MAIN_OUTLINE.setOutlineThickness(2);
     RESULTS_MAIN_OUTLINE.setPosition(RESULT_BOX_Xf, RESULT_BOX_Yf);
+
+    sf::Text PRODUCTURL_PROMPT("Product URL: ", FONT, 36);
+	PRODUCTURL_PROMPT.setFillColor(sf::Color::Cyan);
+    PRODUCTURL_PROMPT.setStyle(sf::Text::Bold);
+	PRODUCTURL_PROMPT.setPosition(RESULT_BOX_Xf, RESULT_BOX_Yf);
+
+    sf::Text RESULT_1("", FONT, 24);
+	RESULT_1.setFillColor(sf::Color::Cyan);
+	RESULT_1.setPosition(RESULT_BOX_Xf+280, RESULT_BOX_Yf+12);
+
+    sf::Text PRODUCT_NAME_PROMPT("Product Name: ", FONT, 36);
+	PRODUCT_NAME_PROMPT.setFillColor(sf::Color::Cyan);
+    PRODUCT_NAME_PROMPT.setStyle(sf::Text::Bold);
+	PRODUCT_NAME_PROMPT.setPosition(RESULT_BOX_Xf, (RESULT_BOX_Yf+(RESULT_BOX_Yi/5)));
+
+    sf::Text RESULT_2("", FONT, 24);
+	RESULT_2.setFillColor(sf::Color::Cyan);
+	RESULT_2.setPosition(RESULT_BOX_Xf+300, (RESULT_BOX_Yf+(RESULT_BOX_Yi/5))+12);
+
+    sf::Text PRODUCT_PRICE_PROMPT("Product Price: ", FONT, 36);
+	PRODUCT_PRICE_PROMPT.setFillColor(sf::Color::Cyan);
+    PRODUCT_PRICE_PROMPT.setStyle(sf::Text::Bold);
+	PRODUCT_PRICE_PROMPT.setPosition(RESULT_BOX_Xf, (RESULT_BOX_Yf+(2*(RESULT_BOX_Yi/5))));
+
+    sf::Text RESULT_3("", FONT, 24);
+	RESULT_3.setFillColor(sf::Color::Cyan);
+	RESULT_3.setPosition(RESULT_BOX_Xf+325, (RESULT_BOX_Yf+(2*(RESULT_BOX_Yi/5)))+12);
+
+    sf::Text PRODUCT_RATING_PROMPT("Product Rating: ", FONT, 36);
+	PRODUCT_RATING_PROMPT.setFillColor(sf::Color::Cyan);
+    PRODUCT_RATING_PROMPT.setStyle(sf::Text::Bold);
+	PRODUCT_RATING_PROMPT.setPosition(RESULT_BOX_Xf, (RESULT_BOX_Yf+(3*(RESULT_BOX_Yi/5))));
+
+    sf::Text RESULT_4("", FONT, 24);
+	RESULT_4.setFillColor(sf::Color::Cyan);
+	RESULT_4.setPosition(RESULT_BOX_Xf+345, (RESULT_BOX_Yf+(3*(RESULT_BOX_Yi/5)))+12);
+
 
     sf::RectangleShape PAGE_LEFT_BUTTON(sf::Vector2f(WINDOW_WIDTH/9.33, WINDOW_HEIGHT/12));
     PAGE_LEFT_BUTTON.setFillColor(sf::Color::Transparent);
@@ -240,8 +281,7 @@ int main()
 
             }
             if (event.type == sf::Event::TextEntered) {
-                if (event.text.unicode > 64 && event.text.unicode < 123) {
-                    std::cout << event.text.unicode << std::endl;
+                if ((event.text.unicode > 64 && event.text.unicode < 123 || event.text.unicode == 32 || event.text.unicode == 45 || event.text.unicode == 39)) {
                     displayKeyword = displayKeyword.substr(0, displayKeyword.size() - 1);
                     displayKeyword += static_cast<char>(event.text.unicode);
                     if (displayKeyword.size() == 0) {
@@ -260,8 +300,114 @@ int main()
                 } else if ((event.mouseButton.x >= GO_BOX.getPosition().x) && (event.mouseButton.x <= (GO_BOX.getPosition().x + GO_BOX.getSize().x))
                         && (event.mouseButton.y >= GO_BOX.getPosition().y) && (event.mouseButton.y <= (GO_BOX.getPosition().y + GO_BOX.getSize().y)))
                 {
+                    // std::chrono::time_point<std::chrono::high_resolution_clock> start;
+                    // std::chrono::time_point<std::chrono::high_resolution_clock> end;
+                    // std::chrono::microseconds duration;
                     keyword = displayKeyword.substr(0, displayKeyword.size() - 1);
+
+                    if(searchMode){
+                        auto start = std::chrono::high_resolution_clock::now();
+                        std::cout << "TREE start: " << start.time_since_epoch().count() << std::endl;
+                        results = productTrie.getKeyword(keyword);
+                        auto end = std::chrono::high_resolution_clock::now();
+                        std::cout << "TREE end:   " << end.time_since_epoch().count() << std::endl;
+                        duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                        if (results.size() > 1) {
+                            drawLRButtons = true;
+                        }
+                    }
+                    else{
+                        auto start = std::chrono::high_resolution_clock::now();
+                        std::cout << "start: " << start.time_since_epoch().count() << std::endl;
+                        results = productHash.getKeyword(keyword);
+                        auto end = std::chrono::high_resolution_clock::now();
+                        std::cout << "end: " << end.time_since_epoch().count() << std::endl;
+                        duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                    }
                     std::cout << keyword << std::endl;
+                    std::cout << "result size: " << results.size() << std::endl;
+                    std::cout << keyword << ": " << results.at(0).name << std::endl;
+                    
+                    std::string tempString = "";
+                    std::string printString = "";
+                    tempString = results.at(currPage).productURL;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_1.setString(printString);
+
+                    printString = "";
+                    tempString = results.at(currPage).name;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_2.setString(printString);
+                    
+                    RESULT_3.setString("$" + results.at(currPage).price);
+                    RESULT_4.setString(results.at(currPage).rating);
+
+                    // duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+                    tempString = ("Total Time Taken: ");
+                    tempString += std::to_string(duration.count());
+                    std::cout << duration.count() << std::endl;
+                    TIME_TEXT.setString(tempString);
+                } else if ((event.mouseButton.x >= PAGE_LEFT_BUTTON.getPosition().x) && (event.mouseButton.x <= (PAGE_LEFT_BUTTON.getPosition().x + PAGE_LEFT_BUTTON.getSize().x))
+                        && (event.mouseButton.y >= PAGE_LEFT_BUTTON.getPosition().y) && (event.mouseButton.y <= (PAGE_LEFT_BUTTON.getPosition().y + PAGE_LEFT_BUTTON.getSize().y)))
+                {
+                    if (currPage == 0) {break;}
+                    currPage--;
+                    std::string tempString = "";
+                    std::string printString = "";
+                    tempString = results.at(currPage).productURL;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_1.setString(printString);
+
+                    printString = "";
+                    tempString = results.at(currPage).name;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_2.setString(printString);
+                    
+                    RESULT_3.setString("$" + results.at(currPage).price);
+                    RESULT_4.setString(results.at(currPage).rating);
+                } else if ((event.mouseButton.x >= PAGE_RIGHT_BUTTON.getPosition().x) && (event.mouseButton.x <= (PAGE_RIGHT_BUTTON.getPosition().x + PAGE_RIGHT_BUTTON.getSize().x))
+                        && (event.mouseButton.y >= PAGE_RIGHT_BUTTON.getPosition().y) && (event.mouseButton.y <= (PAGE_RIGHT_BUTTON.getPosition().y + PAGE_RIGHT_BUTTON.getSize().y)))
+                {
+                    if (currPage == results.size()-1) {break;}
+                    currPage++;
+                    std::string tempString = "";
+                    std::string printString = "";
+
+                    tempString = results.at(currPage).productURL;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_1.setString(printString);
+
+                    printString = "";
+                    tempString = results.at(currPage).name;
+                    while (tempString.size() > 47) {
+                        printString += tempString.substr(0, 47) + "\n";
+                        tempString = tempString.substr(47);
+                    }
+                    printString += tempString;
+                    RESULT_2.setString(printString);
+                    
+                    RESULT_3.setString("$" + results.at(currPage).price);
+                    RESULT_4.setString(results.at(currPage).rating);
                 }
             }
         }
@@ -270,8 +416,6 @@ int main()
         window.draw(SEARCH_BOX);
         window.draw(GO_BOX);
         window.draw(RESULTS_MAIN_OUTLINE);
-        window.draw(PAGE_LEFT_BUTTON);
-        window.draw(PAGE_RIGHT_BUTTON);
         window.draw(KEYWORD_TEXT);
         window.draw(SEARCH_SELECTOR_TEXT);
         window.draw(SEARCH_SELECTOR_HT_TEXT);
@@ -283,12 +427,24 @@ int main()
         } else {
             window.draw(HT_RADIO_BUTTON_SELECTED);
         }
+        if (drawLRButtons) {
+            window.draw(PAGE_LEFT_BUTTON);
+            window.draw(PAGE_LEFT_BUTTON_PROMPT);
+            window.draw(PAGE_RIGHT_BUTTON);
+            window.draw(PAGE_RIGHT_BUTTON_PROMPT);
+        }
         window.draw(SEARCH_BOX_PROMPT);
         window.draw(GO_BOX_PROMPT);
         window.draw(PROJECT_DESCRIPTION);
-        window.draw(PAGE_LEFT_BUTTON_PROMPT);
-        window.draw(PAGE_RIGHT_BUTTON_PROMPT);
         window.draw(TIME_TEXT);
+        window.draw(RESULT_1);
+        window.draw(PRODUCTURL_PROMPT);
+        window.draw(PRODUCT_NAME_PROMPT);
+        window.draw(RESULT_2);
+        window.draw(PRODUCT_PRICE_PROMPT);
+        window.draw(RESULT_3);
+        window.draw(PRODUCT_RATING_PROMPT);
+        window.draw(RESULT_4);
         window.display();
     }
     return 0;
